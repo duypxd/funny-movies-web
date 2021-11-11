@@ -2,37 +2,30 @@ import React, { useEffect } from "react";
 import { Col, Container, Row, Spinner, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import getAllVideo from "../redux/VideoRedux/videos.operations";
+import putVoteVideo from "../redux/VideoRedux/vote.operations";
 import {
   BsHandThumbsDownFill,
   BsHandThumbsDown,
   BsHandThumbsUp,
   BsHandThumbsUpFill,
 } from "react-icons/bs";
-import "./video.css";
-
-export type TItemVideo = {
-  _id?: string;
-  url: string;
-  title: string;
-  desc: string;
-  videoId: string;
-  authorShare: string;
-  likes?: number;
-  unLikes?: number;
-  isLike?: boolean;
-  isUnLikes?: boolean;
-  updatedAt?: string;
-  createdAt?: string;
-};
+import "../css/video.css";
+import { TItemVideo } from "../api/video";
 
 const Videos = () => {
   const dispatch = useDispatch();
   const { data, loading } = useSelector((state: any) => state.video);
   const { user } = useSelector((state: any) => state.auth);
 
-  const onUnlike = () => {};
-
-  const onLike = () => {};
+  const onLikeOrUnlike =
+    (videoId?: string, isVote: boolean = false) =>
+    async () => {
+      try {
+        await dispatch(putVoteVideo({ videoId, isVote }));
+      } catch (err: any) {
+        console.log("err", { ...err });
+      }
+    };
 
   useEffect(() => {
     dispatch(getAllVideo());
@@ -68,7 +61,7 @@ const Videos = () => {
                       <Button
                         variant="light"
                         disabled={!user}
-                        onClick={onUnlike}
+                        onClick={onLikeOrUnlike(item?._id, false)}
                       >
                         {!item.isUnLikes ? (
                           <BsHandThumbsDown />
@@ -82,7 +75,7 @@ const Videos = () => {
                         variant="light"
                         className="m-2"
                         disabled={!user}
-                        onClick={onLike}
+                        onClick={onLikeOrUnlike(item?._id, true)}
                       >
                         {!item.isLike ? (
                           <BsHandThumbsUp />

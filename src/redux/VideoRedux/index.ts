@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Video from './videos.operations';
 import PostVideo from './post.video.operations';
+import PutVoteVideo from './vote.operations';
+import { TItemVideo } from '../../api/video';
 
 const initialState: any = {
   loading: false,
@@ -23,6 +25,7 @@ const authSlice = createSlice({
     [Video?.rejected]: (state) => {
       state.loading = false;
     },
+
     [PostVideo?.pending]: (state) => {
       state.isShareMovie = true;
     },
@@ -32,6 +35,15 @@ const authSlice = createSlice({
     },
     [PostVideo?.rejected]: (state) => {
       state.isShareMovie = false;
+    },
+
+    [PutVoteVideo?.fulfilled]: (state, { payload }) => {
+      state.data = state.data.map((m: TItemVideo) => {
+        if (m._id === payload.result._id) {
+          return { ...m, ...payload.result }
+        }
+        return m;
+      })
     },
   },
 });

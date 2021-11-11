@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import { BsYoutube } from "react-icons/bs";
 
 import LoginForm from "./LoginForm";
+import "../css/nav.css";
 
 const Header = () => (
-  <Navbar bg="dark" variant="dark">
+  <Navbar bg="dark" variant="dark" className="sticky-nav">
     <Container>
       <Navbar.Brand as={Link} to="/">
         <BsYoutube size={40} />

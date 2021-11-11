@@ -1,9 +1,0 @@
-.container {
-  min-height: 2rem;
-  background-color: $darker;
-  @include media-breakpoint-up(md) {
-    position: sticky;
-    top: 0;
-    z-index: 1040;
-  }
-}
