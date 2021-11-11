@@ -2,10 +2,10 @@ import { Container, Form, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { BsYoutube } from "react-icons/bs";
 
-import HeaderAuth from "./HeaderAuth";
+import LoginForm from "./LoginForm";
 
 const Header = () => (
-  <Navbar bg="danger" variant="dark">
+  <Navbar bg="dark" variant="dark">
     <Container>
       <Navbar.Brand as={Link} to="/">
         <BsYoutube size={40} />
@@ -13,7 +13,7 @@ const Header = () => (
           Funny Movies
         </Form.Label>
       </Navbar.Brand>
-      <HeaderAuth />
+      <LoginForm />
     </Container>
   </Navbar>
 );
