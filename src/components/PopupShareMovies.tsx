@@ -18,7 +18,12 @@ const PopupShareMovies = () => {
       url: "",
     },
     validationSchema: Yup.object({
-      url: Yup.string().url().required("Youtube URL is a required field"),
+      url: Yup.string()
+        .matches(
+          /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/,
+          "Youtube URL incorrect"
+        )
+        .required("Youtube URL is a required field"),
     }),
     onSubmit: (values) => {
       onShareYoutubeURL(values.url);
