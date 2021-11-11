@@ -1,9 +1,16 @@
 import React, { useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { Modal, Form, FormControl, Button } from "react-bootstrap";
+import { Modal, Form, FormControl, Button, Spinner } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { YOUTUBE_API_KEY } from "../utils/keyConfig";
+import PostVideo from "../redux/VideoRedux/post.video.operations";
+import { actions as actionListener } from "../redux/ListenerRedux";
 
 const PopupShareMovies = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state: any) => state.auth);
+  const { isShareMovie } = useSelector((state: any) => state.video);
   const [show, setShow] = useState(false);
 
   const formik = useFormik({
@@ -11,7 +18,7 @@ const PopupShareMovies = () => {
       url: "",
     },
     validationSchema: Yup.object({
-      url: Yup.string().required("Youtube URL is a required field"),
+      url: Yup.string().url().required("Youtube URL is a required field"),
     }),
     onSubmit: (values) => {
       onShareYoutubeURL(values.url);
@@ -22,7 +29,31 @@ const PopupShareMovies = () => {
 
   const onShareYoutubeURL = async (url: string) => {
     try {
-    } catch (err) {}
+      const videoId = url.split("v=").pop();
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${YOUTUBE_API_KEY}&part=snippet,contentDetails,statistics,status`
+      );
+      const resJSON = await response.json();
+      const mv = resJSON?.items[0]?.snippet;
+      const payload = {
+        url,
+        authorShare: user?.email,
+        videoId,
+        title: mv.title,
+        desc: mv.description,
+      };
+      await dispatch(PostVideo(payload));
+      handleClose();
+    } catch (err: any) {
+      dispatch(
+        actionListener.setMessageGlobal({
+          status: "error",
+          title: "Share movies error!",
+          message: err?.message || "An unexpected error occurred.",
+          isShow: true,
+        })
+      );
+    }
   };
 
   const handleClose = () => {
@@ -60,8 +91,21 @@ const PopupShareMovies = () => {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleSubmit}>
-            Share
+          <Button
+            variant="primary"
+            onClick={handleSubmit}
+            disabled={isShareMovie}
+          >
+            {isShareMovie && (
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            )}
+            <span className="p-2">Share</span>
           </Button>
         </Modal.Footer>
       </Modal>

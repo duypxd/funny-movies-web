@@ -8,6 +8,7 @@ import PopupShareMovies from "./PopupShareMovies";
 import signIn from "../redux/AuthRedux/signIn.operations";
 import SignUp from "../redux/AuthRedux/SignUp.operations";
 import getMe from "../redux/AuthRedux/getMe.operations";
+import getAllVideo from "../redux/VideoRedux/videos.operations";
 import { actions as actionAuth } from "../redux/AuthRedux";
 import { actions as actionListener } from "../redux/ListenerRedux";
 
@@ -68,6 +69,7 @@ function HeaderAuth() {
           })
         );
       }
+      dispatch(getAllVideo());
       formik.resetForm();
     } catch (err: any) {
       dispatch(
@@ -96,6 +98,7 @@ function HeaderAuth() {
 
   const onSignOut = () => {
     dispatch(actionAuth.signOut());
+    dispatch(getAllVideo());
     formik.resetForm();
   };
 

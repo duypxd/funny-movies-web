@@ -1,11 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import * as AuthApis from '../../api/auth';
 
-const getMe: any = createAsyncThunk(
-  'auth/getMe',
+import * as videoApis from '../../api/video';
+
+const getAllVideo: any = createAsyncThunk(
+  'video/getAllVideo',
   async (__, { rejectWithValue }) => {
     try {
-      const response = await AuthApis.getMe();
+      const response = await videoApis.getAllVideos();
       return response?.data;
     } catch (err: any) {
       if (!err) {
@@ -16,4 +17,4 @@ const getMe: any = createAsyncThunk(
   },
 );
 
-export default getMe;
+export default getAllVideo;
