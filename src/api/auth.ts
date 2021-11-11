@@ -2,13 +2,25 @@ import { TInitialValue } from "../components/LoginForm";
 import http from "./http";
 
 export async function signIn(data: TInitialValue) {
-  return http.post('api/auth/signIn', data);
+  try {
+    return await http.post('api/auth/signIn', data);
+  } catch (err: any) {
+    throw err?.response?.data;
+  }
 }
 
 export async function signUp(data: TInitialValue) {
-  return http.post('api/auth/signUp', data);
+  try {
+    return await http.post('api/auth/signUp', data);
+  } catch (err: any) {
+    throw err?.response?.data;
+  }
 }
 
 export async function getMe() {
-  return http.get('api/auth/getMe');
+  try {
+    return await http.get('api/auth/getMe');
+  } catch (err: any) {
+    throw err?.response?.data;
+  }
 }

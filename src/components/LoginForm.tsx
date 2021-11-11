@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
+import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Form, FormControl, Spinner, Col, Row, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import * as Yup from "yup";
+import PopupShareMovies from "./PopupShareMovies";
+
 import signIn from "../redux/AuthRedux/signIn.operations";
 import SignUp from "../redux/AuthRedux/SignUp.operations";
 import getMe from "../redux/AuthRedux/getMe.operations";
-import { actions } from "../redux/AuthRedux";
+import { actions as actionAuth } from "../redux/AuthRedux";
+import { actions as actionListener } from "../redux/ListenerRedux";
 
 type TAuthState = "SignIn" | "SignUp";
 
@@ -48,15 +51,33 @@ function HeaderAuth() {
 
   const onRequestAuth = async (values: TInitialValue) => {
     try {
+      let resp: any = null;
       if (authType === "SignIn") {
-        await dispatch(signIn(values));
+        resp = await dispatch(signIn(values));
       }
       if (authType === "SignUp") {
-        await dispatch(SignUp(values));
+        resp = await dispatch(SignUp(values));
+      }
+      if (!resp?.payload?.status) {
+        dispatch(
+          actionListener.setMessageGlobal({
+            status: "error",
+            title: "Oops!",
+            message: resp?.payload?.message,
+            isShow: true,
+          })
+        );
       }
       formik.resetForm();
-    } catch (err) {
-      formik.resetForm();
+    } catch (err: any) {
+      dispatch(
+        actionListener.setMessageGlobal({
+          status: "error",
+          title: "Oops!",
+          message: err?.message,
+          isShow: true,
+        })
+      );
     }
   };
 
@@ -74,7 +95,7 @@ function HeaderAuth() {
   }, []);
 
   const onSignOut = () => {
-    dispatch(actions.signOut());
+    dispatch(actionAuth.signOut());
     formik.resetForm();
   };
 
@@ -87,7 +108,9 @@ function HeaderAuth() {
         <Col xs="auto">
           <span className="text-light bg-dark">Welcome {user?.email}</span>
         </Col>
-        <Col xs="auto">{/* <ShareVideos /> */}</Col>
+        <Col xs="auto">
+          <PopupShareMovies />
+        </Col>
         <Col xs="auto">
           <Button type="button" onClick={onSignOut}>
             Logout
