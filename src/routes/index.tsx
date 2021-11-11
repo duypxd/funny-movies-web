@@ -7,7 +7,7 @@ import Videos from "../views/Videos";
 const RoutersMain = () => (
   <Router>
     <Header />
-    <Container>
+    <Container className="mt-5 pt-3">
       <Route exact path="/" component={Videos} />
     </Container>
     <Alerts />
