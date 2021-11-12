@@ -3,11 +3,11 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Modal, Form, FormControl, Button, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { YOUTUBE_API_KEY } from "../utils/keyConfig";
-import PostVideo from "../redux/VideoRedux/post.video.operations";
-import { actions as actionListener } from "../redux/ListenerRedux";
+import { YOUTUBE_API_KEY } from "../../utils/keyConfig";
+import PostVideo from "../../redux/VideoRedux/post.video.operations";
+import { actions as actionListener } from "../../redux/ListenerRedux";
 
-const PopupShareMovies = () => {
+const ShareMovies = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state: any) => state.auth);
   const { isShareMovie } = useSelector((state: any) => state.video);
@@ -39,7 +39,7 @@ const PopupShareMovies = () => {
         `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${YOUTUBE_API_KEY}&part=snippet,contentDetails,statistics,status`
       );
       const resJSON = await response.json();
-      const mv = resJSON?.items[0]?.snippet;
+      const mv = resJSON?.items[0]?.snippet || {};
       const payload = {
         url,
         authorShare: user?.email,
@@ -118,4 +118,4 @@ const PopupShareMovies = () => {
   );
 };
 
-export default PopupShareMovies;
+export default ShareMovies;

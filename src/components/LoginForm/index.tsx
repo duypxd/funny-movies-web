@@ -3,20 +3,20 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Form, FormControl, Spinner, Col, Row, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import PopupShareMovies from "./PopupShareMovies";
+import ShareMovies from "../ShareMovies";
 
-import signIn from "../redux/AuthRedux/signIn.operations";
-import SignUp from "../redux/AuthRedux/SignUp.operations";
-import getMe from "../redux/AuthRedux/getMe.operations";
-import getAllVideo from "../redux/VideoRedux/videos.operations";
-import { actions as actionAuth } from "../redux/AuthRedux";
-import { actions as actionListener } from "../redux/ListenerRedux";
+import signIn from "../../redux/AuthRedux/signIn.operations";
+import SignUp from "../../redux/AuthRedux/SignUp.operations";
+import getMe from "../../redux/AuthRedux/getMe.operations";
+import getAllVideo from "../../redux/VideoRedux/videos.operations";
+import { actions as actionAuth } from "../../redux/AuthRedux";
+import { actions as actionListener } from "../../redux/ListenerRedux";
 
 type TAuthState = "SignIn" | "SignUp";
 
 export type TInitialValue = { email: string; password: string };
 
-function HeaderAuth() {
+function LoginForm() {
   const dispatch = useDispatch();
   const { user, isSignIn } = useSelector((state: any) => state.auth);
   const [authType, setAuthType] = useState<TAuthState>("SignIn");
@@ -69,7 +69,9 @@ function HeaderAuth() {
           })
         );
       }
-      dispatch(getAllVideo());
+      if (resp?.payload?.status) {
+        dispatch(getAllVideo());
+      }
       formik.resetForm();
     } catch (err: any) {
       dispatch(
@@ -109,10 +111,12 @@ function HeaderAuth() {
     return (
       <Row className="align-items-center">
         <Col xs="auto">
-          <span className="text-light bg-dark">Welcome {user?.email}</span>
+          <span className="text-light bg-dark" data-test-id="div-container">
+            Welcome {user?.email}
+          </span>
         </Col>
         <Col xs="auto">
-          <PopupShareMovies />
+          <ShareMovies />
         </Col>
         <Col xs="auto">
           <Button type="button" onClick={onSignOut}>
@@ -123,7 +127,7 @@ function HeaderAuth() {
     );
   }
   return (
-    <Row>
+    <Row data-testid="div-container">
       <Form.Group as={Col}>
         <FormControl
           type="text"
@@ -170,4 +174,4 @@ function HeaderAuth() {
   );
 }
 
-export default HeaderAuth;
+export default LoginForm;
